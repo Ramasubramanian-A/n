@@ -1,0 +1,24 @@
+@Service
+public class RideService {
+
+    private final RideRepository rideRepository;
+
+    @Autowired
+    public RideService(RideRepository rideRepository) {
+        this.rideRepository = rideRepository;
+    }
+
+    public RideStatus getRideStatus(Long rideId) {
+        return rideRepository.findById(rideId).map(ride -> new RideStatus(ride.getId(), ride.getStatus()))
+                .orElse(null);
+    }
+
+    public boolean reserveRide(Long rideId, ReservationRequest request) {
+        Optional<Ride> rideOpt = rideRepository.findById(rideId);
+        if (rideOpt.isPresent() && rideOpt.get().getStatus() == RideStatus.OPEN) {
+            // Logic to reserve ride (e.g., adding reservation to database)
+            return true;
+        }
+        return false;
+    }
+}
